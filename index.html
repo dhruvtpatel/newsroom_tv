@@ -242,7 +242,7 @@ const SHEET_CSV =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vTKx-RLgpSi8LAyWnwASyl3PH5tbZud2j_uaz_zo8nFq5e7QfvOM6NuGNXpQRjdfKSkv_V2STv-qnbt/pub?output=csv";
 
 async function loadPoll(){
-  const res = await fetch(SHEET_CSV);
+  const res = await fetch(SHEET_CSV + "&t=" + Date.now());
   const text = await res.text();
   const rows = text.trim().split("\n").map(r=>r.split(","));
 
@@ -269,7 +269,7 @@ async function loadPoll(){
 }
 
 loadPoll();
-setInterval(loadPoll,15000);
+setInterval(loadPoll,5000);
 </script>
 </body>
 </html>
