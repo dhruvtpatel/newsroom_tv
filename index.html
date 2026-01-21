@@ -60,7 +60,7 @@ body{
   flex:1;
   min-height:0;
 }
-.events-list{overflow:auto;padding-right:2px}
+.events-list{overflow:hidden}
 .event{
   font-size:17px;
   padding:5px 0;
@@ -72,7 +72,7 @@ body{
 .spotify-wrap{
   border-radius:10px;
   overflow:hidden;
-  height:120px;
+  height:95px;
   position:relative;
 }
 .spotify-wrap iframe{
@@ -186,7 +186,7 @@ function updateTime(){
 }
 setInterval(updateTime,1000); updateTime();
 
-// Events
+// Events (max 5)
 const events=[
  "Jan 21 — Super Bowl Watch Party",
  "Jan 22 — Grad Co Meeting",
@@ -198,7 +198,7 @@ const events=[
  "Feb 08 — Pizza Party"
 ];
 const ev=document.getElementById("events");
-events.forEach(e=>{
+events.slice(0,5).forEach(e=>{
   const d=document.createElement("div");
   d.className="event";
   d.textContent=e;
