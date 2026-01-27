@@ -53,9 +53,9 @@ body{
   flex-direction:column;
   gap:6px;
 }
-.logo{color:#a51c30;font-weight:bold;font-size:16px}
+.logo{color:var(--crimson);font-weight:bold;font-size:16px}
 .welcome{font-size:12px}
-.time{font-size:68px;color:#a51c30;line-height:.95}
+.time{font-size:68px;color:var(--crimson);line-height:.95}
 .date{font-size:14px;color:var(--muted)}
 
 .spotify{
@@ -83,7 +83,7 @@ body{
 }
 .proofer-name{
   font-size:20px;
-  color:#a51c30;
+  color:var(--crimson);
   font-weight:bold;
 }
 .countdown{
@@ -116,12 +116,11 @@ body{
 .scoops .num{
   font-size:44px;
   font-weight:bold;
-  color:#a51c30;
+  color:var(--crimson);
 }
 .rewards{
   margin-top:4px;
   font-size:11px;
-  color:#333;
 }
 .rewards div{
   padding:2px 0;
@@ -131,8 +130,7 @@ body{
 
 /* POLL */
 .poll-box{
-  flex:1;
-  min-height:240px;
+  height:260px;
   display:flex;
   flex-direction:column;
 }
@@ -145,6 +143,8 @@ body{
   width:100%;
   height:100%;
   border:0;
+  transform:scale(0.92);
+  transform-origin:top center;
 }
 </style>
 </head>
@@ -160,10 +160,7 @@ body{
   <div class="date" id="date"></div>
 
   <div class="spotify">
-    <iframe 
-      src="https://open.spotify.com/embed/playlist/6ZTkxn7qyBtvLqWBmQeaUn"
-      allow="autoplay; encrypted-media">
-    </iframe>
+    <iframe src="https://open.spotify.com/embed/playlist/6ZTkxn7qyBtvLqWBmQeaUn"></iframe>
   </div>
 </div>
 
@@ -180,7 +177,6 @@ body{
   <div>
     <div class="section-title">Latest from the Crimson</div>
     <div class="feed">
-      <script src="https://cdn.lightwidget.com/widgets/lightwidget.js"></script>
       <iframe src="https://cdn.lightwidget.com/widgets/d96bb35398d75ecf8aa4496966aa2bea.html"></iframe>
     </div>
   </div>
@@ -203,9 +199,7 @@ body{
     <div class="section-title">Poll of the Week</div>
     <div class="poll-embed">
       <iframe
-        src="https://wall.sli.do/event/weWy7p7G3ogPbjwE4mr7Ao?section=9afe462b-12b0-4e93-bb38-0bb4abea182d"
-        allowfullscreen
-        loading="lazy">
+        src="https://wall.sli.do/event/weWy7p7G3ogPbjwE4mr7Ao?section=9afe462b-12b0-4e93-bb38-0bb4abea182d">
       </iframe>
     </div>
   </div>
@@ -226,9 +220,91 @@ function updateTime(){
 }
 setInterval(updateTime,1000);updateTime();
 
-/* PROOFER */
-const proofers=["LP Chavez","Dhruv Patel","Maya Patel","Jordan Smith"];
-proofer.textContent=proofers[new Date().getDate()%proofers.length];
+/* PROOFER SCHEDULE */
+const prooferSchedule = {
+  "2026-01-26":"Elyse Gonclaves",
+  "2026-01-27":"Matan Josephy",
+  "2026-01-28":"Darcy Lin",
+  "2026-01-29":"Samuel A. Church",
+  "2026-02-01":"Emily Schwartz",
+  "2026-02-02":"Veronica Paulus",
+  "2026-02-03":"Akshaya Ravi",
+  "2026-02-04":"Annabel Yu",
+  "2026-02-05":"William Mao",
+  "2026-02-08":"Angelina Parker",
+  "2026-02-09":"Grace E. Yoon",
+  "2026-02-10":"Samuel A. Church",
+  "2026-02-11":"Veronica Paulus",
+  "2026-02-12":"Matan Josephy",
+  "2026-02-15":"Danielle Im",
+  "2026-02-16":"Darcy Lin",
+  "2026-02-17":"Saketh Sundar",
+  "2026-02-18":"Annabel Yu",
+  "2026-02-19":"Emily Schwartz",
+  "2026-02-22":"Elyse Goncalves",
+  "2026-02-23":"Grace E. Yoon",
+  "2026-02-24":"Matan Josephy",
+  "2026-02-25":"Avani Rai",
+  "2026-02-26":"Samuel A. Church",
+  "2026-03-01":"Akshaya Ravi",
+  "2026-03-02":"William Mao",
+  "2026-03-03":"Annabel Yu",
+  "2026-03-04":"Darcy Lin",
+  "2026-03-05":"Emily Schwartz",
+  "2026-03-08":"Elyse Goncalves",
+  "2026-03-09":"Avani Rai",
+  "2026-03-10":"Veronica Paulus",
+  "2026-03-11":"Saketh Sundar",
+  "2026-03-12":"William Mao",
+  "2026-03-22":"Akshaya Ravi",
+  "2026-03-23":"Elyse Goncalves",
+  "2026-03-24":"Grace E. Yoon",
+  "2026-03-25":"Annabel Yu",
+  "2026-03-26":"Matan Josephy",
+  "2026-03-29":"Angelina Parker",
+  "2026-03-30":"Grace E. Yoon",
+  "2026-03-31":"Samuel A. Church",
+  "2026-04-01":"Avani Rai",
+  "2026-04-02":"Emily Schwartz",
+  "2026-04-05":"Saketh Sundar",
+  "2026-04-06":"William Mao",
+  "2026-04-07":"Elyse Goncalves",
+  "2026-04-08":"Annabel Yu",
+  "2026-04-09":"Samuel A. Church",
+  "2026-04-12":"Emily Schwartz",
+  "2026-04-13":"Veronica Paulus",
+  "2026-04-14":"Matan Josephy",
+  "2026-04-15":"Veronica Paulus",
+  "2026-04-16":"William Mao",
+  "2026-04-19":"Angelina Parker",
+  "2026-04-20":"Darcy Lin",
+  "2026-04-21":"Akshaya Ravi",
+  "2026-04-22":"Grace E. Yoon",
+  "2026-04-23":"Annabel Yu",
+  "2026-04-26":"Avani Rai",
+  "2026-04-27":"William Mao",
+  "2026-04-28":"Angelina Parker",
+  "2026-04-29":"Saketh Sundar",
+  "2026-04-30":"Veronica Paulus",
+  "2026-05-03":"Danielle Im",
+  "2026-05-05":"Samuel A. Church"
+};
+
+/* PROOFER LOGIC — RESET AT 4 AM */
+function updateProofer(){
+  const now = new Date();
+  const effectiveDate = new Date(now);
+
+  if (now.getHours() < 4) {
+    effectiveDate.setDate(effectiveDate.getDate() - 1);
+  }
+
+  const iso = effectiveDate.toISOString().slice(0,10);
+  proofer.textContent = prooferSchedule[iso] || "—";
+}
+
+updateProofer();
+setInterval(updateProofer, 60 * 1000);
 
 /* COUNTDOWN */
 function updateCountdown(){
@@ -236,11 +312,10 @@ function updateCountdown(){
   t.setHours(0,59,0,0);
   if(now>t)t.setDate(t.getDate()+1);
   const d=t-now;
-  const h=Math.floor(d/3600000),
-        m=Math.floor(d%3600000/60000),
-        s=Math.floor(d%60000/1000);
-  countdown.textContent=
-    `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+  countdown.textContent =
+    `${String(Math.floor(d/3600000)).padStart(2,"0")}:` +
+    `${String(Math.floor(d%3600000/60000)).padStart(2,"0")}:` +
+    `${String(Math.floor(d%60000/1000)).padStart(2,"0")}`;
 }
 setInterval(updateCountdown,1000);updateCountdown();
 </script>
