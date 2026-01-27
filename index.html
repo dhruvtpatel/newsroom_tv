@@ -70,7 +70,7 @@ body{
   border:0;
 }
 
-/* MIDDLE — UNCHANGED */
+/* MIDDLE — EXACTLY LIKE WORKING VERSION */
 .middle{
   display:flex;
   flex-direction:column;
@@ -129,20 +129,18 @@ body{
 }
 .rewards div:first-child{border-top:none}
 
-/* POLL — FILL REMAINING SPACE */
+/* POLL — FILL TO BOTTOM */
 .poll-box{
-  flex:1;                 /* 🔑 this is the key */
+  flex:1;
   display:flex;
   flex-direction:column;
-  min-height:0;           /* prevents flex overflow bugs */
+  min-height:0;
 }
-
 .poll-embed{
   flex:1;
-  overflow:hidden;
   border-radius:8px;
+  overflow:hidden;
 }
-
 .poll-embed iframe{
   width:100%;
   height:100%;
@@ -162,7 +160,10 @@ body{
   <div class="date" id="date"></div>
 
   <div class="spotify">
-    <iframe src="https://open.spotify.com/embed/playlist/6ZTkxn7qyBtvLqWBmQeaUn"></iframe>
+    <iframe
+      src="https://open.spotify.com/embed/playlist/6ZTkxn7qyBtvLqWBmQeaUn"
+      allow="autoplay; encrypted-media">
+    </iframe>
   </div>
 </div>
 
@@ -176,9 +177,11 @@ body{
     <div class="countdown" id="countdown"></div>
   </div>
 
+  <!-- IMPORTANT: keep this wrapper exactly -->
   <div>
     <div class="section-title">Latest from the Crimson</div>
     <div class="feed">
+      <script src="https://cdn.lightwidget.com/widgets/lightwidget.js"></script>
       <iframe src="https://cdn.lightwidget.com/widgets/d96bb35398d75ecf8aa4496966aa2bea.html"></iframe>
     </div>
   </div>
@@ -201,7 +204,9 @@ body{
     <div class="section-title">Poll of the Week</div>
     <div class="poll-embed">
       <iframe
-        src="https://wall.sli.do/event/weWy7p7G3ogPbjwE4mr7Ao?section=9afe462b-12b0-4e93-bb38-0bb4abea182d">
+        src="https://wall.sli.do/event/weWy7p7G3ogPbjwE4mr7Ao?section=9afe462b-12b0-4e93-bb38-0bb4abea182d"
+        allowfullscreen
+        loading="lazy">
       </iframe>
     </div>
   </div>
@@ -295,11 +300,9 @@ const prooferSchedule = {
 function updateProofer(){
   const now = new Date();
   const effectiveDate = new Date(now);
-
   if (now.getHours() < 4) {
     effectiveDate.setDate(effectiveDate.getDate() - 1);
   }
-
   const iso = effectiveDate.toISOString().slice(0,10);
   proofer.textContent = prooferSchedule[iso] || "—";
 }
@@ -312,7 +315,7 @@ function updateCountdown(){
   t.setHours(0,59,0,0);
   if(now>t)t.setDate(t.getDate()+1);
   const d=t-now;
-  countdown.textContent =
+  countdown.textContent=
     `${String(Math.floor(d/3600000)).padStart(2,"0")}:` +
     `${String(Math.floor(d%3600000/60000)).padStart(2,"0")}:` +
     `${String(Math.floor(d%60000/1000)).padStart(2,"0")}`;
