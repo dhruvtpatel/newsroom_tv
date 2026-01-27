@@ -70,7 +70,7 @@ body{
   border:0;
 }
 
-/* MIDDLE */
+/* MIDDLE — UNCHANGED */
 .middle{
   display:flex;
   flex-direction:column;
@@ -107,9 +107,10 @@ body{
   display:flex;
   flex-direction:column;
   gap:8px;
-  overflow-y:auto;
+  height:100%;
 }
 
+/* SCOOPS */
 .scoops{
   text-align:center;
 }
@@ -128,23 +129,24 @@ body{
 }
 .rewards div:first-child{border-top:none}
 
-/* POLL */
+/* POLL — FILL REMAINING SPACE */
 .poll-box{
-  height:260px;
+  flex:1;                 /* 🔑 this is the key */
   display:flex;
   flex-direction:column;
+  min-height:0;           /* prevents flex overflow bugs */
 }
+
 .poll-embed{
   flex:1;
-  border-radius:8px;
   overflow:hidden;
+  border-radius:8px;
 }
+
 .poll-embed iframe{
   width:100%;
   height:100%;
   border:0;
-  transform:scale(0.92);
-  transform-origin:top center;
 }
 </style>
 </head>
@@ -222,7 +224,6 @@ setInterval(updateTime,1000);updateTime();
 
 /* PROOFER SCHEDULE */
 const prooferSchedule = {
-  "2026-01-26":"Elyse Gonclaves",
   "2026-01-27":"Matan Josephy",
   "2026-01-28":"Darcy Lin",
   "2026-01-29":"Samuel A. Church",
@@ -302,9 +303,8 @@ function updateProofer(){
   const iso = effectiveDate.toISOString().slice(0,10);
   proofer.textContent = prooferSchedule[iso] || "—";
 }
-
 updateProofer();
-setInterval(updateProofer, 60 * 1000);
+setInterval(updateProofer, 60000);
 
 /* COUNTDOWN */
 function updateCountdown(){
