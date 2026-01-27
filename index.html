@@ -4,22 +4,27 @@
 <meta charset="UTF-8">
 <title>Crimson Newsroom</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
 :root{
   --crimson:#a51c30;
-  --dark:#111;
   --muted:#777;
   --line:#e6e6e6;
   --card:#f7f7f7;
 }
 *{box-sizing:border-box}
+
+html, body{
+  height:100%;
+}
+
 body{
   margin:0;
   font-family:Georgia,serif;
   background:#fff;
-  height:100vh;
   overflow:hidden;
 }
+
 .container{
   display:grid;
   grid-template-columns:1.3fr 1.1fr 1fr;
@@ -34,7 +39,7 @@ body{
   letter-spacing:1.2px;
   text-transform:uppercase;
   color:var(--muted);
-  margin-bottom:2px;
+  margin-bottom:4px;
 }
 .card{
   background:var(--card);
@@ -48,9 +53,9 @@ body{
   flex-direction:column;
   gap:6px;
 }
-.logo{color:var(--crimson);font-weight:bold;font-size:16px}
+.logo{color:#a51c30;font-weight:bold;font-size:16px}
 .welcome{font-size:12px}
-.time{font-size:68px;color:var(--crimson);line-height:.95}
+.time{font-size:68px;color:#a51c30;line-height:.95}
 .date{font-size:14px;color:var(--muted)}
 
 .spotify{
@@ -78,7 +83,7 @@ body{
 }
 .proofer-name{
   font-size:20px;
-  color:var(--crimson);
+  color:#a51c30;
   font-weight:bold;
 }
 .countdown{
@@ -102,14 +107,16 @@ body{
   display:flex;
   flex-direction:column;
   gap:8px;
+  overflow-y:auto;
 }
+
 .scoops{
   text-align:center;
 }
 .scoops .num{
   font-size:44px;
   font-weight:bold;
-  color:var(--crimson);
+  color:#a51c30;
 }
 .rewards{
   margin-top:4px;
@@ -125,31 +132,23 @@ body{
 /* POLL */
 .poll-box{
   flex:1;
+  min-height:240px;
   display:flex;
   flex-direction:column;
-  gap:6px;
 }
-.poll-title{
-  font-size:13px;
-  font-weight:bold;
-  text-align:center;
-}
-.poll-results{width:100%;}
-.poll-row{font-size:11px;margin-top:4px;}
-.bar{
-  width:100%;
-  height:8px;
-  background:#ddd;
-  border-radius:6px;
+.poll-embed{
+  flex:1;
+  border-radius:8px;
   overflow:hidden;
-  margin:2px 0;
 }
-.bar div{
+.poll-embed iframe{
+  width:100%;
   height:100%;
-  background:var(--crimson);
+  border:0;
 }
 </style>
 </head>
+
 <body>
 <div class="container">
 
@@ -202,28 +201,36 @@ body{
 
   <div class="card poll-box">
     <div class="section-title">Poll of the Week</div>
-    <div id="pollQuestion" class="poll-title"></div>
-    <div style="font-size:11px;color:var(--muted);text-align:center">
+    <div class="poll-embed">
+      <iframe
+        src="https://wall.sli.do/event/weWy7p7G3ogPbjwE4mr7Ao?section=9afe462b-12b0-4e93-bb38-0bb4abea182d"
+        allowfullscreen
+        loading="lazy">
+      </iframe>
     </div>
-    <div id="pollResults" class="poll-results"></div>
   </div>
 
 </div>
 </div>
 
 <script>
+/* CLOCK */
 function updateTime(){
   const n=new Date();
   let h=n.getHours(),m=n.getMinutes().toString().padStart(2,"0");
   h=h%12||12;
   time.textContent=`${h}:${m}`;
-  date.textContent=n.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"});
+  date.textContent=n.toLocaleDateString(undefined,{
+    weekday:"short",month:"short",day:"numeric"
+  });
 }
 setInterval(updateTime,1000);updateTime();
 
+/* PROOFER */
 const proofers=["LP Chavez","Dhruv Patel","Maya Patel","Jordan Smith"];
 proofer.textContent=proofers[new Date().getDate()%proofers.length];
 
+/* COUNTDOWN */
 function updateCountdown(){
   const now=new Date(),t=new Date();
   t.setHours(0,59,0,0);
@@ -236,57 +243,7 @@ function updateCountdown(){
     `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
 }
 setInterval(updateCountdown,1000);updateCountdown();
-
-/* POLL FROM GOOGLE SHEET */
-const SHEET_CSV =
-"https://docs.google.com/spreadsheets/d/e/2PACX-1vTKx-RLgpSi8LAyWnwASyl3PH5tbZud2j_uaz_zo8nFq5e7QfvOM6NuGNXpQRjdfKSkv_V2STv-qnbt/pub?output=csv";
-
-async function loadPoll(){
-  const txt = await fetch(SHEET_URL).then(r=>r.text());
-  const json = JSON.parse(txt.substring(txt.indexOf("{"),txt.lastIndexOf("}")+1));
-  const rows = json.table.rows;
-
-  let question = rows[0]?.c[1]?.v || "";
-  let choices = [];
-  let votes = [];
-  let inVotes = false;
-
-  for(let i=1;i<rows.length;i++){
-    const a = rows[i].c[0]?.v || "";
-    const b = rows[i].c[1]?.v || "";
-
-    if(!b) continue;
-
-    if(!inVotes && !a){
-      // still in choices section
-      choices.push(b);
-    } else {
-      // once we hit first timestamp, everything after is votes
-      inVotes = true;
-      votes.push(b);
-    }
-  }
-
-  const counts = {};
-  choices.forEach(c => counts[c] = 0);
-  votes.forEach(v => { if(counts[v] != null) counts[v]++; });
-
-  const total = votes.length || 1;
-  pollQuestion.textContent = question;
-  pollResults.innerHTML = "";
-
-  choices.forEach(c=>{
-    const pct = Math.round(counts[c]/total*100);
-    pollResults.innerHTML += `
-      <div class="poll-row">${c} — ${pct}% (${counts[c]})</div>
-      <div class="bar"><div style="width:${pct}%"></div></div>
-    `;
-  });
-}
-
-
-loadPoll();
-setInterval(loadPoll,5000);
 </script>
+
 </body>
 </html>
