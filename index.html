@@ -192,7 +192,7 @@ body{
 
   <div class="card scoops">
     <div class="section-title">Scoops This Month</div>
-    <div class="num">3</div>
+    <div class="num">6</div>
     <div class="rewards">
       <div>5 scoops → Domino's for everyone</div>
       <div>10 scoops → Cam / Laurel get pied in the face</div>
@@ -297,16 +297,33 @@ const prooferSchedule = {
   "2026-05-05":"Samuel A. Church"
 };
 
-/* PROOFER LOGIC — RESET AT 4 AM */
+/* PROOFER LOGIC — 4 PM TO 4 AM, LOCAL BOSTON TIME */
 function updateProofer(){
   const now = new Date();
-  const effectiveDate = new Date(now);
-  if (now.getHours() < 4) {
+  const hour = now.getHours();
+
+  let effectiveDate = null;
+
+  if (hour >= 16) {
+    effectiveDate = new Date(now);
+  } else if (hour < 4) {
+    effectiveDate = new Date(now);
     effectiveDate.setDate(effectiveDate.getDate() - 1);
   }
-  const iso = effectiveDate.toISOString().slice(0,10);
+
+  if (!effectiveDate) {
+    proofer.textContent = "—";
+    return;
+  }
+
+  const year = effectiveDate.getFullYear();
+  const month = String(effectiveDate.getMonth() + 1).padStart(2,"0");
+  const day = String(effectiveDate.getDate()).padStart(2,"0");
+  const iso = `${year}-${month}-${day}`;
+
   proofer.textContent = prooferSchedule[iso] || "—";
 }
+
 updateProofer();
 setInterval(updateProofer, 60000);
 
@@ -317,8 +334,8 @@ function updateCountdown(){
   if(now>t)t.setDate(t.getDate()+1);
   const d=t-now;
   countdown.textContent=
-    `${String(Math.floor(d/3600000)).padStart(2,"0")}:` +
-    `${String(Math.floor(d%3600000/60000)).padStart(2,"0")}:` +
+    `${String(Math.floor(d/3600000)).padStart(2,"0")}:`+
+    `${String(Math.floor(d%3600000/60000)).padStart(2,"0")}:`+
     `${String(Math.floor(d%60000/1000)).padStart(2,"0")}`;
 }
 setInterval(updateCountdown,1000);updateCountdown();
